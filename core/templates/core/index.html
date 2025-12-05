@@ -1,0 +1,147 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}HubUni – главная{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container hero__inner">
+        <div class="hero__text">
+            <h1 class="hero__title">
+                Единая цифровая платформа<br>
+                университетов Казахстана
+            </h1>
+            <p class="hero__subtitle">
+                Сравнивайте, изучайте и выбирайте образование без барьеров.
+            </p>
+
+            <form class="hero__search" action="" method="get">
+                {% if selected_category %}
+                    <input type="hidden" name="category" value="{{ selected_category.slug }}">
+                {% endif %}
+                <span class="hero__search-icon">🔍</span>
+                <input type="text" class="hero__search-input"
+                       placeholder="Введите название университета или программы…"
+                       name="q">
+                <button type="submit" class="btn btn--primary hero__search-btn">
+                    найти
+                </button>
+            </form>
+        </div>
+
+        <div class="hero__image">
+            <div class="hero__image-placeholder">
+                <span>фото студента</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section section--no-top">
+    <div class="container">
+        <h2 class="section__title">Категории университетов</h2>
+
+        <div class="chips">
+            <a href="{% url 'home' %}"
+               class="chip {% if not selected_category %}chip--active{% endif %}">
+                Все
+            </a>
+            {% for cat in categories %}
+                <a href="?category={{ cat.slug }}"
+                   class="chip {% if selected_category and cat.id == selected_category.id %}chip--active{% endif %}">
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+
+        <p class="section__subtitle">
+            Показано {{ shown_count }} из {{ total_count }} университетов
+            {% if selected_category %}по категории «{{ selected_category.name }}»{% endif %}.
+        </p>
+
+        <div class="cards-grid">
+            {% for uni in universities %}
+                <article class="uni-card">
+                    <div class="uni-card__header">
+                        <div class="uni-card__image-placeholder">
+                            {% if uni.main_image %}
+                                <img src="{{ uni.main_image.url }}" alt="{{ uni.short_name }}">
+                            {% else %}
+                                <span>Фото</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="uni-card__body">
+                        <h3 class="uni-card__title">{{ uni.full_name }}</h3>
+
+                        <p class="uni-card__city">
+                            📍 {{ uni.get_city_display }}
+                        </p>
+
+                        <p class="uni-card__directions">
+                            🧩
+                            {% for cat in uni.categories.all %}
+                                {{ cat.name }}{% if not forloop.last %} · {% endif %}
+                            {% endfor %}
+                        </p>
+
+                        <p class="uni-card__price">
+                            💰 {{ uni.tuition_min|default:"—" }} – {{ uni.tuition_max|default:"—" }} ₸ в год
+                        </p>
+
+                        <p class="uni-card__grants">
+                            {% if uni.has_grants %}
+                                ✅ Есть гранты
+                            {% else %}
+                                — Гранты не указаны
+                            {% endif %}
+                        </p>
+
+                        <p class="uni-card__rating">
+                            ⭐ {{ uni.rating|default:"—" }} / 5
+                        </p>
+                    </div>
+
+                    <div class="uni-card__footer">
+                        <a href="#" class="link-button">Подробнее</a>
+
+                        <label class="compare-toggle">
+                            <input type="checkbox">
+                            <span>Сравнить</span>
+                        </label>
+                    </div>
+                </article>
+            {% empty %}
+                <p>Пока нет университетов для отображения.</p>
+            {% endfor %}
+        </div>
+
+        {% if show_more %}
+            <div class="section__more">
+                <a class="btn btn--outline"
+                   href="?{% if selected_category %}category={{ selected_category.slug }}&{% endif %}limit={{ next_limit }}">
+                    Показать ещё
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="container">
+        <h2 class="section__title">Университетская тепловая карта</h2>
+        <p class="section__subtitle">
+            Исследуйте вузы визуально: стоимость, популярность, направления.
+        </p>
+
+        <div class="heatmap-placeholder">
+            карта
+        </div>
+    </div>
+</section>
+
+{% endblock %}

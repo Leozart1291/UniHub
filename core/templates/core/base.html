@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}HubUni{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+<body>
+<header class="navbar">
+    <div class="container navbar__inner">
+        <div class="navbar__left">
+            <div class="navbar__logo">UniHUB</div>
+            <nav class="navbar__menu">
+                <a href="{% url 'home' %}" class="navbar__link">Университеты</a>
+                <a href="#" class="navbar__link">Программы</a>
+                <a href="#" class="navbar__link">Тепловая карта</a>
+                <a href="#" class="navbar__link">Инклюзивность</a>
+                <a href="#" class="navbar__link">Calculator Mode</a>
+                <a href="#" class="navbar__link">О проекте</a>
+            </nav>
+        </div>
+        <div class="navbar__right">
+            <div class="navbar__langs">
+                <button class="link-button link-button--muted">KZ</button>
+                <span>|</span>
+                <button class="link-button link-button--active">RU</button>
+                <span>|</span>
+                <button class="link-button link-button--muted">EN</button>
+            </div>
+            <a href="#" class="btn btn--primary">Войти</a>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <span>© {{ now|date:"Y" }} HubUni. Все права защищены.</span>
+    </div>
+</footer>
+</body>
+</html>
